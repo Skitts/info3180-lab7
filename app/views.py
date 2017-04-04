@@ -5,6 +5,7 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 
+from image_getter import *
 from app import app
 from flask import render_template, request, redirect, url_for, jsonify
 from bs4 import BeautifulSoup
@@ -24,6 +25,18 @@ def home():
 ###
 # The functions below should be applicable to all Flask apps.
 ###
+@app.route('api/thumbnails')
+def thumbnail():
+    result= {"thumbnail":get_img(), "message": "Success", "error": "null"}
+    result_2= make_response(jsonify(result))
+    result_2.headers["Content-Type"]='application/json'
+    return result_2
+    
+    
+@app.route('/thumbnails/view')
+    def thumbnailview():
+        return render_template ('thumbnails.html')
+
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):

@@ -4,9 +4,10 @@ import urlparse
 
 
 def get_img():
-url = "https://www.walmart.com/ip/54649026"
-result = requests.get(url)
-soup = BeautifulSoup(result.text, "html.parser")
+    url = "https://www.walmart.com/ip/54649026"
+    result = requests.get(url)
+    soup = BeautifulSoup(result.text, "html.parser")
+    images = []
 
 # This will look for a meta tag with the og:image property
 og_image = (soup.find('meta', property='og:image') or
