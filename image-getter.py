@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import urlparse
 
+
+def get_img():
 url = "https://www.walmart.com/ip/54649026"
 result = requests.get(url)
 soup = BeautifulSoup(result.text, "html.parser")
@@ -24,3 +26,6 @@ image = """<img src="%s"><br />"""
 for img in soup.findAll("img", src=True):
    print image % urlparse.urljoin(url, img["src"])
    print ''
+
+
+print get_img()
