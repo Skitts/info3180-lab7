@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block js %}
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+{% endblock%}
+
+{% block main %}
+<h1 class="page-header">Thumbnails</h1>
+<p class="lead"></p>
+
+<script type="text/javascript" src="/static/js/angular.js">
+var app = angular.module('Ang_App', []);
+app.controller('MainCtrl', function($scope, $http){
+	$http.get("/api/thumbnails").then(function(response){
+		$scope.thumbnails = response.data.thumbnails;
+	});
+})
+</script>
+
+
+<div ng-app="AngApp" ng-controller="MainCtrl">
+	<div ng-repeat="url in thumbnails track by $index">
+		<div class="col-md-2">
+		    <img class = "thumbnail" style="width:100px; height:100px; " src="{{'{{url}}'}}">
+    		</div>
+	</div>
+</div>
+{% endblock %}

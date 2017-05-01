@@ -5,7 +5,6 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 
-from image_getter import *
 from app import app
 from flask import render_template, request, redirect, url_for, jsonify
 from bs4 import BeautifulSoup
@@ -22,21 +21,44 @@ def home():
     return render_template('home.html')
 
 
+
+
+@app.route('/api/thumbnails')
+def thumb_link():
+    
+    url = "https://www.amazon.com/Amazon-Echo-Bluetooth-Speaker-with-WiFi-Alexa/dp/B00X4WHP5E/ref=redir_mobile_desktop?_encoding=UTF8&ref_=ods_gw_ha_d_black"
+    result = requests.get(url)
+    soup = BeautifulSoup(result.text, "html.parser")
+    
+    
+    og_image = (soup.find('meta', property='og:image') or
+                    soup.find('meta', attrs={'name': 'og:image'}))
+    if og_image and og_image['content']:
+        return og_image['content']
+
+    thumbnail_spec = soup.find('link', rel='image_src')
+    if thumbnail_spec and thumbnail_spec['href']:
+        print thumbnail_spec['href']
+        print ''
+        
+    
+    imageList = []
+    image = "%s"
+    for img in soup.findAll("img", src=True):
+        results= image % urlparse.urljoin(url, img["src"])
+        imageList+=[results]
+           
+    return jsonify(error= None, message ="Success",thumbnails=imageList)
+
+            
+@app.route('/thumbnails/view')
+def view_thumbs():
+    
+    return render_template('images.html')
+    
 ###
 # The functions below should be applicable to all Flask apps.
 ###
-@app.route('api/thumbnails')
-def thumbnail():
-    result= {"thumbnail":get_img(), "message": "Success", "error": "null"}
-    result_2= make_response(jsonify(result))
-    result_2.headers["Content-Type"]='application/json'
-    return result_2
-    
-    
-@app.route('/thumbnails/view')
-    def thumbnailview():
-        return render_template ('thumbnails.html')
-
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
